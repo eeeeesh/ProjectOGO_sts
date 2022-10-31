@@ -1,6 +1,7 @@
 package com.controller.classpage;
 
 import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.dto.classpage.ClassDTO;
 import com.dto.classpage.ClassImgDTO;
+import com.dto.comment.ClassCommentDTO;
 import com.dto.comment.ClassCommentPageDTO;
 import com.dto.member.MemberDTO;
 import com.service.classpage.ClassPageService;
@@ -70,10 +72,15 @@ public class ClassPageController {
 		ClassImgDTO imgDTO = classService.getImage(classNum);
 		
 /////////////////////////////코멘트 추가하기///////////////////////////////
+//		if(curpage == null) { curpage="1"; }
+//		System.out.println(curpage);
+//		ClassCommentPageDTO cmtpagedto = cmtservice.viewPage(Integer.parseInt(curpage),classNum);
+//		System.out.println("classpageSevlet"+cmtpagedto);
+		//내가 코멘트 다시 구현
 		if(curpage == null) { curpage="1"; }
-		System.out.println(curpage);
-		ClassCommentPageDTO cmtpagedto = cmtservice.viewPage(Integer.parseInt(curpage),classNum);
-		System.out.println("classpageSevlet"+cmtpagedto);
+		List<ClassCommentDTO> cmtDTO=cmtservice.selectCmt(classNum);
+		System.out.println("cmtDTO:"+cmtDTO);
+		
 		
 		//mav.addObject() ->해주세요
 		mav.addObject("classDTO", cDTO); //classDTO 
@@ -83,7 +90,8 @@ public class ClassPageController {
 		mav.addObject("heartYN", heartYN); //찜 여부 검사
 		mav.addObject("heartCount", count); //찜 개수 count
 		mav.addObject("imgDTO", imgDTO); //클래스 별 이미지
-		mav.addObject("cmtpagedto", cmtpagedto); //classComment(수강후기)
+		//mav.addObject("cmtpagedto", cmtpagedto); //classComment(수강후기)
+		mav.addObject("cmtDTO", cmtDTO);
 		
 		//클래스 등록 페이지 테스트 위한 session
 		session.setAttribute("classDTO", cDTO);

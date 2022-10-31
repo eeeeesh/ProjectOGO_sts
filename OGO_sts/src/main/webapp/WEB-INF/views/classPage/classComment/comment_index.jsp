@@ -14,55 +14,61 @@
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&family=Jua&family=Nanum+Gothic+Coding&family=Noto+Sans+KR:wght@900&family=Sunflower:wght@300&display=swap" rel="stylesheet">
 	<link rel='stylesheet' href='css/classComment/comment.css'>
 <!-- 값없을 시 제외 -->
+<%
+	MemberDTO mDTO= (MemberDTO)session.getAttribute("login"); 
+	String userId=null;
+	if(mDTO!=null){ //로그인 되어있는 경우
+		userId = mDTO.getUserId();
+	}
+%>
 <script type="text/javascript">
 	 $(function() {
+		 
+		 $("textarea").on("click", function() {
+			 $("textarea").text("");
+		})
 		 /* create button */
-		$("#cmt_submit1").click(function() {
-			
-			$("textarea").remove("#cmt_textarea2");
-			$("#cmt_submit1").attr("type", "submit");
-			$("#cmt_form").attr("action", "loginCheck/comment_create");
-			
-		})		
+			$("#createComment").on("click", function() {
+				if ('<%=userId%>'=='null') {
+					alert("로그인 후 작성해주세요");
+					event.preventDefault();
+				}else{
+					var commentText= $("#commentText").val();
+					console.log(commentText);
+					event.preventDefault();
+					//ajax 
+					$.ajax({
+						type: "get",
+						url: "loginCheck/commentCreate", //servlet에서 session에 카테고리 정보 저장
+						dataType: "text",
+						async: false,
+						data: { //서버에 넘겨줄 데이터
+							commentText : commentText
+						},
+						success: function(data, status, xhr) {
+							console.log("success");
+							console.log(data);
+						},
+						error: function(xhr, status, e) {
+							console.log("error");
+							console.log(e, status);
+						}
+					})//ajax end 
+				}
+				
+			})
 		
 		/* update button */
-		$("#cmt_submit2").click(function() {
-			
-			$("textarea").remove("#cmt_textarea");
-			$("#cmt_submit2").attr("type", "submit");
-			$("#cmt_form").attr("action", "loginCheck/comment_update");
-		})		
+		$("#updateComment").on("click", function() {
+			alert("후기 수정");
+			event.preventDefault();
+		})
 		/* delete button */
-		$("#cmt_button3").click(function() {
-			
-			$("textarea").remove("#cmt_textarea");
-			$("textarea").remove("#cmt_textarea2");
-			$("#cmt_button3").attr("type", "submit");
-			$("#cmt_form").attr("action", "loginCheck/comment_delete");
-		})		
+		$("#deleteComment").on("click", function() {
+			alert("후기 삭제");
+			event.preventDefault();
+		})
 		
-		/* notice==null에 따른 img,hr 제외  */
-		if( $.trim($(".notice1>#notice_detail").text())==""){
-			$(".img1").css("display","none");
-			$(".cmt_line2").css("display","none");
-		}else{
-			$(".img1").show();
-			$(".cmt_line2").show();
-		}
-		if($.trim($(".notice2>#notice_detail").text())==""){
-			$(".img2").css("display","none");
-			$(".cmt_line3").css("display","none");
-		}else{
-			$(".img2").show();
-			$(".cmt_line3").show();
-		}
-		if($.trim($(".notice3>#notice_detail").text())==""){
-			$(".img3").css("display","none");
-			$(".cmt_line4").css("display","none");
-		}else{
-			$(".img3").show();
-			$(".cmt_line4").show();
-		}
 		
 	}) //end funtion 
  
@@ -72,135 +78,44 @@
 	alert("<%= mesg %>");
 <%} session.removeAttribute("mesg"); %> 
 </script>
-    <form action="" id="cmt_form" method="get" >
+<div>수강생 후기</div> <!--header--><br>
+<hr>
+<br>
+<c:forEach var="cmtList" items="${cmtDTO}">
+  <div class="comment">
+  	userId:
+	<span class="comment_userId">
+		${cmtList.getUserid()}
+	</span>&nbsp;&nbsp;&nbsp;&nbsp;
+	<span class="comment_notice">
+		${cmtList.getComment_notice()}
+	</span>&nbsp;&nbsp;&nbsp;&nbsp;
+	<span class="comment_date">
+		${cmtList.getComment_date()}
+	</span>&nbsp;
+	<!-- 로그인한 유저와 후기 작성 유저의 아이디가 일치할 경우에만 보이도록 설정하기 -->
+<%-- <c:if test="${cmtList.getUserid()} eq '<%=userId %>'"> --%>
+	<span class="comment_update">
+		<button type="submit" class="btn btn-secondary" id="updateComment">수정</button>
+	</span>&nbsp;
+	<span class="comment_delete">
+		<button type="submit" class="btn btn-secondary" id="deleteComment">삭제</button>
+	</span>
+<%-- </c:if> --%>
 
-    
-	        <div class="cmt_header cmheader">수강생 후기
-	        </div> <!--header-->
-	        <div class="score">
-	                <!--  <b id="cmt_score">★4.3</b> 더미텍스트: 평균구하는 값 기입필요
-	                 <b id="cmt_total">/ 5.0</b> -->
-	        </div>
+  </div>
+</c:forEach>
+<br>
+  <form action="" id="cmt_form" method="get" >
+	<div id="commentArea">
+		<textarea id="commentText" rows="2" cols="100">후기를 작성해주세요</textarea>
+		<button type="submit" class="btn btn-secondary" id="createComment">작성</button>
+		<!-- <div class="d-grid gap-2 col-6 mx-auto">
+	  	   <button type="submit" class="btn btn-secondary" id="createComment">작성</button>
+		</div -->>
+	</div>
 	
-	        <div class="line1"><hr class="cmt_line1"></div>
-	        <div class="line2"><hr class="cmt_line2"></div>
-	        <div class="line3"><hr class="cmt_line3"></div>
-	        <div class="line4"><hr class="cmt_line4"></div>
-	     
-	        <div class="img1"></div>
-	        <div class="img2"></div>
-	        <div class="img3"></div>
-
-
-
 	
-	        <div class="notice1"><br>
-	        	<p><p id="notice_detail"><b>&nbsp&nbsp&nbsp&nbsp${cmtpagedto.list[0].comment_notice}</b></p></p>
-	        </div> <!--임시 text DB연동-->
-
-	        <div class="notice2"><br>
-	        	<p id="notice_detail"><b>&nbsp&nbsp${cmtpagedto.list[1].comment_notice}</b></p>
-	        </div> <!--임시 text DB연동-->
-
-	
-	        <div class="notice3"><br>
-	        	<p><p id="notice_detail"><b>&nbsp&nbsp&nbsp&nbsp${cmtpagedto.list[2].comment_notice}</b></p></p>
-	        </div> <!--임시 text DB연동-->
- 
-
-	
-	<table id="cmt_page1">
-		<tr> 
-			<td colspan="2" id="cmt_page2">
-				<br>
-				
-				
-			
-				
-				<c:forEach varStatus="status" begin="1" end="${ cmtpagedto.totalPage/cmtpagedto.perPage }" >
-					<c:if  test="${ cmtpagedto.curPage  == status.index }">
-							&nbsp&nbsp${ status.index }&nbsp&nbsp
-					</c:if> 
-					
-					<c:if test="${ cmtpagedto.curPage  != status.index }">
-					<a class="cmt_page" href="ClassPage?listNum=${classDTO.classNum}&curpage=${ status.index }">&nbsp${ status.index }&nbsp</a>  
-					</c:if> 
-				</c:forEach>
-				
-				<c:if test="${ cmtpagedto.totalPage%cmtpagedto.perPage >0 }">
-					<a class="cmt_page" href="ClassPage?listNum=${classDTO.classNum}&curpage=<fmt:parseNumber var="i" integerOnly="true" value="${cmtpagedto.totalPage/cmtpagedto.perPage+1}"/>${i}"><fmt:parseNumber var="i" integerOnly="true" value="${cmtpagedto.totalPage/cmtpagedto.perPage+1}"/> ${i}</a> <!-- 소수점 제거  -->
-				</c:if>
-				<br>
-				<br>
-			</td>
-		</tr>
-		</table>
-
-		<!-- delete button -->
-		<c:if test="${login !=null }">
-		<button type="" id="cmt_button3" onclick="location.href'Delete_CommentServlet'">삭제</button>
-		</c:if>
-		<!-- update button -->
-		<c:if test="${ login != null }">
-		<!-- () =test
-		if() => if test="" -->
-		<button type="button" class="btn btn-primary" id="cmt_button2" data-bs-toggle="modal" 
-			data-bs-target="#staticBackdrop">수정
-		</button>
-		</c:if>
-			
-			<!-- Modal -->
-			<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-			  <div class="modal-dialog">
-			    <div class="modal-content">
-			      <div class="modal-header">
-			        <h5 class="modal-title" id="staticBackdropLabel">수정하기</h5>
-			        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			      </div>
-			      <div class="modal-body" id="textarea2">
-			         <textarea id="cmt_textarea2" name="cmttextarea2" rows="5" cols="60"></textarea>
-			      </div>
-			      <div class="modal-footer">
-			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-			        <button type="" class="btn btn-primary" id="cmt_submit2" >확인</button>
-			      </div>
-			    </div>
-			  </div>
-			</div>
-
-<!-- create button -->    
-	<c:if test="${login !=null }">
-	<button type="button" class="btn btn-primary button_body" id="cmt_button1" data-toggle="modal" data-target="#myModal"
- 			style="background-color: purple;">쓰기
- 	</button>
- 	</c:if>
-
-			<!-- The Modal -->
-			<div class="modal" id="myModal">
-			  <div class="modal-dialog">
-			    <div class="modal-content">
-			      <!-- Modal Header -->
-			      <div class="modal-header">
-			        <h4 class="modal-title">글쓰기</h4>
-			      </div>
-			      <!-- Modal body -->
-			      <div class="modal-body">
-			        <textarea id="cmt_textarea" name="cmttextarea" rows="5" cols="60"></textarea>
-			        <!-- ClassDTO cDTO =(ClassDTO)request.getAttribute("classDTO"); -->
-			        <input id="classDTO" name="classDTO" type="hidden" value="${ classDTO }"> 
-			      </div>
-			      <!-- Modal footer -->
-			      <div class="modal-footer">
-			       	<button type="" class="cmt_submit" id="cmt_submit1" 
-			      		style="position: relative; background-color: rgb(220,53,69); 
-			      		color: white; border: 0px; border-radius: 4px; width: 54px; height: 38px;
-			      		text-align: center;">확인</button>
-			        <button type="button" class="btn btn-danger" data-dismiss="modal">닫기</button>
-			      </div>
-			    </div>
-			  </div>
-			</div>
-
   </form>
   
  
