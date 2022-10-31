@@ -1,5 +1,6 @@
 package com.service.comment;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -37,6 +38,22 @@ public class ClassCommentService {
 	public ClassCommentPageDTO viewPage(int curpage, int classNum) {
 		ClassCommentPageDTO dto = dao.viewPage(curpage,classNum);
 		return dto;
+	}
+
+
+//소현 추가
+	public List<ClassCommentDTO> selectCmt(int classNum) {
+		return dao.selectCmt(classNum);
+	}
+
+
+	public int createComment(HashMap<String, Object> cmtData) {
+		return dao.createComment(cmtData);
+	}
+
+
+	public int deleteComment(HashMap<String, Object> cmtData) {
+		return dao.deleteComment(cmtData);
 	}
 
 

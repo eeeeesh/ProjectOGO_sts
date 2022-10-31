@@ -1,5 +1,6 @@
 package com.dao.comment;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.session.RowBounds;
@@ -46,6 +47,21 @@ public class ClassCommentDAO {
 	private int totalcount(int classNum) {
 		int total = template.selectOne("ClassCommentMapper.viewTotal" ,classNum);
 		return total;
+	}
+
+	public List<ClassCommentDTO> selectCmt(int classNum) {
+		List<ClassCommentDTO> cmtList= template.selectList("ClassCommentMapper.selectCmt", classNum);
+		return cmtList;
+	}
+
+	public int createComment(HashMap<String, Object> cmtData) {
+		int num= template.insert("ClassCommentMapper.createComment", cmtData);
+		return num;
+	}
+
+	public int deleteComment(HashMap<String, Object> cmtData) {
+		int num=template.delete("ClassCommentMapper.deleteComment", cmtData);
+		return num;
 	}
 
 

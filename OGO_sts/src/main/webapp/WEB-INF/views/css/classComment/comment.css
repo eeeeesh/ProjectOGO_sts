@@ -1,4 +1,4 @@
-
+/* 
 #cmt_form{
     position:absolute;
     left:20%;
@@ -244,4 +244,15 @@
 .cmt_page{
 	font-family:  'Nanum Gothic', sans-serif;
 	font-size: 23px;
+} */
+.comment_userId{
+	color: black;
+    /* font-weight: bold; */
+    font-size: 26px;
+}
+.comment_notice{
+	font-family: 'Sunflower', sans-serif;
+    color: black;
+    font-weight: bold;
+    font-size: 26px;
 }
