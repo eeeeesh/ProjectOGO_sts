@@ -21,8 +21,27 @@ public class ClassCommentController2 {
 	
 	
 	//comment Insert
+//	@RequestMapping(value = "/loginCheck/commentCreate", produces = "application/text;charset=utf8")
+//	@ResponseBody
+//	public String commentCreate(String commentText, HttpSession session) { //리뷰 생성 => 1.데이터 받기(textarea, classNum, userid)+dto전달 // 3.cmtadd로 같이 보내기 
+//		System.out.println("commentText:"+commentText);
+//		ClassDTO cDTO = (ClassDTO) session.getAttribute("classDTO");
+//		int classNum =cDTO.getClassNum();
+//		MemberDTO mDTO =(MemberDTO) session.getAttribute("login");
+//		String userId=mDTO.getUserId();
+//		
+//		HashMap<String, Object> cmtData= new HashMap<String, Object>();
+//		cmtData.put("commentText", commentText);
+//		cmtData.put("classNum", classNum);
+//		cmtData.put("userId", userId);
+//		
+//		int result =service.createComment(cmtData);
+//		System.out.println("등록 성공:"+result);
+//		
+//	return "리뷰 등록 성공";
+//	}
+	
 	@RequestMapping(value = "/loginCheck/commentCreate", produces = "application/text;charset=utf8")
-	@ResponseBody
 	public String commentCreate(String commentText, HttpSession session) { //리뷰 생성 => 1.데이터 받기(textarea, classNum, userid)+dto전달 // 3.cmtadd로 같이 보내기 
 		System.out.println("commentText:"+commentText);
 		ClassDTO cDTO = (ClassDTO) session.getAttribute("classDTO");
@@ -38,7 +57,7 @@ public class ClassCommentController2 {
 		int result =service.createComment(cmtData);
 		System.out.println("등록 성공:"+result);
 		
-	return "리뷰 등록 성공";
+		return "redirect: ../ClassPage?listNum="+classNum;
 	}
 
 

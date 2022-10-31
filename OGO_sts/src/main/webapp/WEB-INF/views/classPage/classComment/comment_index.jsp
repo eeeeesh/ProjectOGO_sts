@@ -35,9 +35,9 @@
 				}else{
 					var commentText= $("#commentText").val();
 					console.log(commentText);
-					event.preventDefault();
+					//event.preventDefault();
 					//ajax 
-					$.ajax({
+					/* $.ajax({
 						type: "get",
 						url: "loginCheck/commentCreate", //servlet에서 session에 카테고리 정보 저장
 						dataType: "text",
@@ -53,7 +53,8 @@
 							console.log("error");
 							console.log(e, status);
 						}
-					})//ajax end 
+					})//ajax end  */
+					$("#cmt_form").attr("action","loginCheck/commentCreate");
 				}
 				
 			})
@@ -106,9 +107,9 @@
   </div>
 </c:forEach>
 <br>
-  <form action="" id="cmt_form" method="get" >
+  <form action="" id="cmt_form" method="post" >
 	<div id="commentArea">
-		<textarea id="commentText" rows="2" cols="100">후기를 작성해주세요</textarea>
+		<textarea id="commentText" name="commentText" rows="2" cols="100">후기를 작성해주세요</textarea>
 		<button type="submit" class="btn btn-secondary" id="createComment">작성</button>
 		<!-- <div class="d-grid gap-2 col-6 mx-auto">
 	  	   <button type="submit" class="btn btn-secondary" id="createComment">작성</button>
