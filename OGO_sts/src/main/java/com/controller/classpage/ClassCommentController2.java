@@ -59,7 +59,28 @@ public class ClassCommentController2 {
 		
 		return "redirect: ../ClassPage?listNum="+classNum;
 	}
-
+	@RequestMapping(value = "/loginCheck/commentDelete", produces = "application/text;charset=utf8")
+	@ResponseBody
+	public String commentDelete(int cmtNum, HttpSession session) {
+		System.out.println(cmtNum);
+		ClassDTO cDTO = (ClassDTO) session.getAttribute("classDTO");
+		int classNum =cDTO.getClassNum();
+		MemberDTO mDTO=(MemberDTO) session.getAttribute("login");
+		String userId=mDTO.getUserId();
+		
+		HashMap<String, Object> cmtData= new HashMap<String, Object>();
+		cmtData.put("classNum", classNum);
+		cmtData.put("userId", userId);
+		cmtData.put("cmtNum", cmtNum);
+		
+		String mesg="";
+		int result =service.deleteComment(cmtData);
+		if (result==1) {
+			mesg="삭제 성공";
+		}
+		
+		return mesg;
+	}
 
 	
 }//end

@@ -52,6 +52,11 @@ public class ClassCommentService {
 	}
 
 
+	public int deleteComment(HashMap<String, Object> cmtData) {
+		return dao.deleteComment(cmtData);
+	}
+
+
 	
 
 	

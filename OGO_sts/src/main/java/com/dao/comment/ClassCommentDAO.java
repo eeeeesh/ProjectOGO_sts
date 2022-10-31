@@ -59,6 +59,11 @@ public class ClassCommentDAO {
 		return num;
 	}
 
+	public int deleteComment(HashMap<String, Object> cmtData) {
+		int num=template.delete("ClassCommentMapper.deleteComment", cmtData);
+		return num;
+	}
+
 
 
 	

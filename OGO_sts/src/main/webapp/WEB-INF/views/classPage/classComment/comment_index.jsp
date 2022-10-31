@@ -36,38 +36,53 @@
 					var commentText= $("#commentText").val();
 					console.log(commentText);
 					//event.preventDefault();
-					//ajax 
-					/* $.ajax({
-						type: "get",
-						url: "loginCheck/commentCreate", //servlet에서 session에 카테고리 정보 저장
-						dataType: "text",
-						async: false,
-						data: { //서버에 넘겨줄 데이터
-							commentText : commentText
-						},
-						success: function(data, status, xhr) {
-							console.log("success");
-							console.log(data);
-						},
-						error: function(xhr, status, e) {
-							console.log("error");
-							console.log(e, status);
-						}
-					})//ajax end  */
 					$("#cmt_form").attr("action","loginCheck/commentCreate");
 				}
 				
 			})
 		
 		/* update button */
-		$("#updateComment").on("click", function() {
+		$(".updateComment").on("click", function() {
 			alert("후기 수정");
 			event.preventDefault();
 		})
 		/* delete button */
-		$("#deleteComment").on("click", function() {
-			alert("후기 삭제");
-			event.preventDefault();
+		$(".deleteComment").on("click", function() {
+			var cmt_userid=$(this).attr("data-userId").trim();
+			console.log(cmt_userid)
+			if ('<%=userId%>'=='null') {
+				alert("로그인 후 작성해주세요");
+				event.preventDefault();
+			}else if(cmt_userid !='<%=userId%>'){
+				alert("본인의 수강후기만 삭제할 수 있습니다");
+			}else{
+				console.log($(this).attr("data-cmtNum"));
+				var cmtNum= $(this).attr("data-cmtNum");
+				event.preventDefault();
+				//ajax 
+				$.ajax({
+					type: "get",
+					url: "loginCheck/commentDelete", 
+					dataType: "text",
+					async: false,
+					data: { //서버에 넘겨줄 데이터
+						cmtNum : cmtNum
+					},
+					success: function(data, status, xhr) {
+						console.log("success");
+						console.log(data);
+						if (data=="삭제 성공") {
+							$("#cmt_"+cmtNum).remove();
+							alert("후기를 삭제했습니다");
+						}
+					},
+					error: function(xhr, status, e) {
+						console.log("error");
+						console.log(e, status);
+					}
+				})//ajax end 
+			}
+			
 		})
 		
 		
@@ -83,12 +98,12 @@
 <hr>
 <br>
 <c:forEach var="cmtList" items="${cmtDTO}">
-  <div class="comment">
+  <div class="comment" id="cmt_${cmtList.getComment_no()}">
   	userId:
 	<span class="comment_userId">
 		${cmtList.getUserid()}
 	</span>&nbsp;&nbsp;&nbsp;&nbsp;
-	<span class="comment_notice">
+	<span class="comment_notice" >
 		${cmtList.getComment_notice()}
 	</span>&nbsp;&nbsp;&nbsp;&nbsp;
 	<span class="comment_date">
@@ -97,12 +112,14 @@
 	<!-- 로그인한 유저와 후기 작성 유저의 아이디가 일치할 경우에만 보이도록 설정하기 -->
 <%-- <c:if test="${cmtList.getUserid()} eq '<%=userId %>'"> --%>
 	<span class="comment_update">
-		<button type="submit" class="btn btn-secondary" id="updateComment">수정</button>
+		<button type="submit" class="btn btn-secondary updateComment" >수정</button>
 	</span>&nbsp;
 	<span class="comment_delete">
-		<button type="submit" class="btn btn-secondary" id="deleteComment">삭제</button>
+		<button type="submit" class="btn btn-secondary deleteComment" 
+		data-cmtNum="${cmtList.getComment_no()}" 
+		data-userId="${cmtList.getUserid()}">삭제</button>
+		
 	</span>
-<%-- </c:if> --%>
 
   </div>
 </c:forEach>
@@ -115,7 +132,6 @@
 	  	   <button type="submit" class="btn btn-secondary" id="createComment">작성</button>
 		</div -->>
 	</div>
-	
 	
   </form>
   
